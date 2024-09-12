@@ -334,6 +334,16 @@ async def XenonHandler(message: Message):
 📪 Captured Auths: {h_stat['user']['used_auth_count']}""", parse_mode="Markdown")
             else:await bot.reply_to(message, "Hash id does not Exists ❌")
 
+    elif message.text == "/getme":
+        user_stat = await dbs.isExistsUid(message.from_user.id)
+        if user_stat["exists"]:await bot.reply_to(message, "♦ "+user_stat['user']['hash_id'])
+        else:
+            mark_up = InlineKeyboardMarkup()
+            doc_button = InlineKeyboardButton(text="Documention", callback_data="Documention")
+            mark_up.add(doc_button)
+
+            await bot.reply_to(message, "♦ Please Create an Account First !", reply_markup=mark_up)
+
 @bot.callback_query_handler(func=lambda call: call.data == "Documention")
 async def CallQ(call: CallbackQuery):
     await bot.edit_message_text("🎫 Create Account: /create\n\n📠 Remove Duplicate Auths ( by file ): /remove ( need file reply )\n\n🕹 Convert Normal Auth to Pentest Auth: /convert ( need reply )\n\n🍃 Get Auth Informations: /get ( need reply )\n\n🛰 See Your History: /set <HASH_ID>", call.message.chat.id, call.message.message_id)
